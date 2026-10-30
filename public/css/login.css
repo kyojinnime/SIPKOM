@@ -1,0 +1,87 @@
+/* =====================================================================
+   login.css - gaya halaman login
+   Memakai variabel dan kelas dari app.css (dimuat lebih dulu).
+   Isi: latar, kartu login, kolom isian, tombol mata, gambar, responsif
+   ===================================================================== */
+
+/* ===== BAGIAN: Latar (gradasi sama dengan hero Beranda) ===== */
+.login {
+    background: linear-gradient(110deg, #226b4b 0%, #4f9479 55%, #7ab2a0 100%);
+    color: var(--putih);
+    padding: 56px 0 72px;
+    min-height: calc(100vh - 140px);
+    display: flex; align-items: center;
+}
+.login__isi { display: grid; grid-template-columns: minmax(0, 470px) minmax(0, 1fr); gap: 56px; align-items: center; }
+.login__kiri h1 { font-size: 2.4rem; letter-spacing: 1px; margin-bottom: 2px; }
+.login__kiri h2 { font-size: .95rem; font-weight: 600; margin-bottom: 28px; }
+
+/* ===== BAGIAN: Kartu login ===== */
+.kartu-login {
+    background: var(--putih); color: var(--teks);
+    border-radius: 12px; padding: 26px 32px 22px;
+    box-shadow: 0 18px 44px rgba(8, 40, 26, .3);
+}
+.kartu-login__logo { width: 64px; margin: 0 auto 4px; }
+.kartu-login h3 { margin: 4px 0 18px; color: var(--hijau); font-size: 1.8rem; font-weight: 700; }
+
+/* Pesan galat */
+.galat-umum { margin-bottom: 14px; padding: 10px 14px; border-radius: 8px; background: var(--merah-pucat); color: #a33a46; font-size: .85rem; }
+
+/* ===== BAGIAN: Kolom isian ===== */
+.kolom { position: relative; margin-bottom: 14px; }
+.kolom input {
+    width: 100%; padding: 16px 50px 16px 18px;
+    border: 2px solid transparent; border-radius: 8px;
+    background: var(--hijau-pucat); color: var(--hijau-tua);
+    font: inherit; font-size: .9rem;
+    transition: border-color .2s, background .2s;
+}
+.kolom input::placeholder { color: var(--hijau); opacity: .8; }
+.kolom input:focus { outline: none; background: var(--putih); border-color: var(--hijau-terang); }
+
+/* Tombol mata: ikon "mata" tampil bila password tersembunyi, "mata coret" bila terlihat */
+.kolom__mata {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border: 0; border-radius: 50%; background: transparent; cursor: pointer;
+}
+.kolom__mata:hover { background: rgba(15, 138, 80, .1); }
+.kolom__mata svg { width: 22px; height: 22px; fill: none; stroke: var(--hijau); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.kolom__mata .ikon-mata-coret { display: none; }
+.kolom__mata[aria-pressed="true"] .ikon-mata { display: none; }
+.kolom__mata[aria-pressed="true"] .ikon-mata-coret { display: block; }
+
+/* ===== BAGIAN: Tombol dan tautan ===== */
+.login__kirim {
+    width: 100%; margin-top: 4px; padding: 15px;
+    border: 0; border-radius: 8px; background: var(--hijau); color: var(--putih);
+    font: inherit; font-size: 1.05rem; font-weight: 600; cursor: pointer;
+    transition: background .2s, transform .1s;
+}
+.login__kirim:hover { background: var(--hijau-tua); }
+.login__kirim:active { transform: scale(.99); }
+.login__kirim:disabled { background: var(--abu); cursor: not-allowed; }
+.tautan { margin-top: 16px; text-align: center; }
+.tautan a { color: var(--hijau); font-size: .88rem; text-decoration: none; }
+.tautan a:hover { text-decoration: underline; }
+.kembali { display: inline-block; margin-top: 18px; color: var(--putih); font-size: .85rem; text-decoration: none; opacity: .9; }
+.kembali:hover { opacity: 1; text-decoration: underline; }
+.login a:focus-visible, .login button:focus-visible { outline: 2px solid var(--hijau-terang); outline-offset: 2px; }
+
+/* ===== BAGIAN: Gambar kanan ===== */
+.login__kanan img {
+    width: 100%; max-height: 440px; object-fit: cover;
+    border-radius: 44px; box-shadow: 0 16px 40px rgba(8, 40, 26, .3);
+}
+
+/* ===== BAGIAN: Tablet dan smartphone (<= 900px): gambar disembunyikan agar form langsung terlihat ===== */
+@media (max-width: 900px) {
+    .login { padding: 36px 0 48px; }
+    .login__isi { grid-template-columns: 1fr; gap: 0; }
+    .login__kanan { display: none; }
+    .login__kiri h1 { font-size: 2rem; }
+}
+@media (max-width: 480px) {
+    .kartu-login { padding: 22px 18px 18px; }
+}
