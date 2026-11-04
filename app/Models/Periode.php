@@ -17,9 +17,15 @@ class Periode extends Model
         return static::where('aktif', true)->first();
     }
 
-    /** Tahun mulai dari "2026/2027" -> 2026. Dipakai menghitung tingkat kelas. */
+    /** Tahun mulai dari "2026/2027" -> 2026. */
     public function tahunMulai(): int
     {
         return (int) substr($this->tahun_ajaran, 0, 4);
+    }
+
+    /** Indeks semester: 1 untuk Ganjil, 2 untuk Genap. */
+    public function getSemesterIndex(): int
+    {
+        return $this->semester === 'ganjil' ? 1 : 2;
     }
 }

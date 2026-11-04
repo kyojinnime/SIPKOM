@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Periode;
 use App\Http\Controllers\Controller;
 use App\Models\DosenWali;
 use App\Models\Pengawas;
@@ -20,9 +21,9 @@ class KelolaAkunController extends Controller
      */
     public function index()
     {
-        // withCount: jumlah kelas / ruang per orang dalam satu query, bukan satu query per baris
-        $dosen = DosenWali::with('user')->withCount('kelas')->orderBy('nama_dosen')->get();
-        $pengawas = Pengawas::with('user')->withCount('ruang')->orderBy('nama_pengawas')->get();
+        // withCount: jumlah penugasan kelas / ruang per orang dalam satu query, bukan satu query per baris
+        $dosen = DosenWali::with('user')->withCount($this->hitungArg('dosen'))->orderBy('nama_dosen')->get();
+        Pengawas::with('user')->withCount($this->hitungArg('pengawas'))->orderBy('nama_pengawas')->get();
 
         return view('admin.kelola-akun', compact('dosen', 'pengawas'));
     }
@@ -31,10 +32,24 @@ class KelolaAkunController extends Controller
     private function profil(string $tipe): array
     {
         return match ($tipe) {
-            'dosen'    => ['model' => DosenWali::class, 'kolomNama' => 'nama_dosen',    'role' => 'dosen_wali', 'hitung' => 'kelas'],
-            'pengawas' => ['model' => Pengawas::class,  'kolomNama' => 'nama_pengawas', 'role' => 'pengawas',   'hitung' => 'ruang'],
+            'dosen' => ['model' => DosenWali::class, 'kolomNama' => 'nama_dosen', 'role' => 'dosen_wali'],
+            'pengawas' => ['model' => Pengawas::class,  'kolomNama' => 'nama_pengawas', 'role' => 'pengawas'],
             default    => abort(404),
         };
+    }
+
+    /**
+     * [BARU] Argumen withCount/loadCount per jenis akun.
+     * Dosen wali: hanya penugasan di periode aktif (bukan semua periode, supaya angka tidak membengkak).
+     * Pengawas: semua ruangnya.
+     */
+    private function hitungArg(string $tipe)
+    {
+        if ($tipe === 'dosen') {
+            $idAktif = Periode::yangAktif()?->id;
+            return ['penugasan' => fn($q) => $q->where('periode_id', $idAktif)];
+        }
+        return ['ruang', 'ruangKedua'];
     }
 
     /**
@@ -45,9 +60,13 @@ class KelolaAkunController extends Controller
     {
         return [
             'nama'  => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email:rfc', 'max:50',
-                        Rule::unique('users', 'email')->ignore($userId),
-                        Rule::unique('users', 'username')->ignore($userId)],
+            'email' => [
+                'required',
+                'email:rfc',
+                'max:50',
+                Rule::unique('users', 'email')->ignore($userId),
+                Rule::unique('users', 'username')->ignore($userId)
+            ],
         ];
     }
 
@@ -89,8 +108,12 @@ class KelolaAkunController extends Controller
             ]);
         });
 
-        return $this->balasan($tipe, $item,
-            "{$valid['nama']} ditambahkan. Password awal: " . config('sipkom.password_awal'), 201);
+        return $this->balasan(
+            $tipe,
+            $item,
+            "{$valid['nama']} ditambahkan. Password awal: " . config('sipkom.password_awal'),
+            201
+        );
     }
 
     /** [BARU] Simpan perubahan nama/email. Email berubah berarti username login ikut berubah. */
@@ -112,7 +135,7 @@ class KelolaAkunController extends Controller
         return $this->balasan($tipe, $item, 'Data akun diperbarui.');
     }
 
-        /** [BARU] Aktifkan / nonaktifkan akun. Akun nonaktif tidak bisa login; data dan riwayat tetap aman. */
+    /** [BARU] Aktifkan / nonaktifkan akun. Akun nonaktif tidak bisa login; data dan riwayat tetap aman. */
     public function toggle(string $tipe, int $id): JsonResponse
     {
         $p = $this->profil($tipe);
@@ -124,7 +147,10 @@ class KelolaAkunController extends Controller
         $pesan = $item->user->is_active ? 'Akun diaktifkan kembali.' : 'Akun dinonaktifkan.';
 
         // Peringatan: yang dinonaktifkan masih memegang kelas / ruang, perlu pengganti
-        $jumlah = $item->{$p['hitung']}()->count();
+        // Dosen: hitung penugasan di periode aktif; pengawas: semua ruangnya
+        $jumlah = $tipe === 'dosen'
+            ? $item->penugasan()->where('periode_id', Periode::yangAktif()?->id)->count()
+            : $item->ruang()->count() + $item->ruangKedua()->count();
         if (!$item->user->is_active && $jumlah > 0) {
             $pesan .= $tipe === 'dosen'
                 ? " Masih memegang {$jumlah} kelas, tetapkan dosen wali pengganti."
@@ -158,11 +184,13 @@ class KelolaAkunController extends Controller
 
         // Cek relasi aktif sebelum menghapus
         if ($tipe === 'dosen') {
-            $tertahan = $item->kelas()->exists();
+            // Riwayat penugasan di periode mana pun menahan penghapusan agar riwayat dosen wali aman
+            $tertahan = $item->penugasan()->exists();
+            $alasan = 'Tidak bisa dihapus: dosen wali punya riwayat penugasan kelas. Gunakan Nonaktifkan.';
             $alasan = 'Tidak bisa dihapus: dosen wali masih memegang kelas. Gunakan Nonaktifkan.';
         } else {
             // Tabel kompen mungkin belum dimigrasi; cek hanya bila tabelnya ada
-            $tertahan = $item->ruang()->exists()
+            $item->ruang()->exists() || $item->ruangKedua()->exists()
                 || (Schema::hasTable('kompen') && DB::table('kompen')->where('divalidasi_oleh', $item->id)->exists());
             $alasan = 'Tidak bisa dihapus: pengawas masih punya ruang atau riwayat validasi. Gunakan Nonaktifkan.';
         }
@@ -182,8 +210,7 @@ class KelolaAkunController extends Controller
     /** [BARU] Susun balasan JSON: pesan + HTML satu baris (memakai partial yang sama dengan halaman). */
     private function balasan(string $tipe, $item, string $pesan, int $status = 200): JsonResponse
     {
-        $p = $this->profil($tipe);
-        $item->load('user')->loadCount($p['hitung']); // jumlah kelas / ruang untuk teks di baris
+        $item->load('user')->loadCount($this->hitungArg($tipe));
 
         return response()->json([
             'pesan' => $pesan,

@@ -34,7 +34,10 @@
             <nav class="nav" aria-label="Menu utama">
                 @foreach ($menu as $m)
                     @if ($m['aktif'])
-                        <a href="{{ $m['url'] }}" class="nav__link nav__link--aktif">{{ $m['nama'] }}</a>
+                        <a href="{{ $m['url'] }}" 
+                           class="nav__link {{ request()->is('/') || request()->routeIs('beranda') ? 'nav__link--aktif' : '' }}">
+                            {{ $m['nama'] }}
+                        </a>
                     @else
                         {{-- Menu nonaktif: abu-abu, memunculkan pesan "login dulu" saat disentuh --}}
                         <span class="nav__link nav__link--nonaktif" role="link" aria-disabled="true" tabindex="0"
@@ -47,32 +50,40 @@
                         <a href="{{ route('admin.akun') }}"
                             class="nav__link nav__link--admin {{ request()->routeIs('admin.akun') ? 'nav__link--aktif' : '' }}">Kelola
                             Akun</a>
+                        {{-- Dropdown Kelola Data --}}
+                        <div class="nav-dropdown" data-nav-dropdown>
+                            <button type="button" class="nav__link nav__link--dropdown {{ request()->routeIs('admin.prodi.*', 'admin.kelas.*', 'admin.periode.*', 'admin.ruang.*') ? 'nav__link--aktif' : '' }}" data-nav-dropdown-tombol
+                                    aria-haspopup="true" aria-expanded="false">
+                                Kelola Data
+                            </button>
+                            <div class="nav-dropdown__menu" data-nav-dropdown-menu hidden>
+                                <a href="{{ route('admin.prodi.index') }}" class="nav-dropdown__item">Program Studi</a>
+                                <a href="{{ route('admin.kelas.index') }}" class="nav-dropdown__item">Kelas</a>
+                                <a href="{{ route('admin.periode.index') }}" class="nav-dropdown__item">Periode</a>
+                                <a href="{{ route('admin.ruang.index') }}" class="nav-dropdown__item">Ruang Kompen</a>
+                            </div>
+                        </div>
                     @endif
                 @endauth
             </nav>
 
-            {{-- Login dan Registrasi: belum diarahkan ke halaman mana pun --}}
+            {{-- Login dan Registrasi --}}
             <div class="auth">
-                {{-- Belum login: tombol Login (diarahkan ke halaman login di tahap berikutnya) --}}
                 @guest
                     <a href="{{ route('login') }}" class="btn btn--kecil" id="tombolLogin">Login</a>
                 @endguest
-                {{-- [BARU] Sudah login: dropdown akun (inisial, nama, role, keluar) --}}
-                                @auth
+                
+                @auth
                     <div class="akun" data-akun>
                         <button type="button" class="akun__tombol" data-akun-tombol
                                 aria-haspopup="true" aria-expanded="false">
-                            {{-- Lingkaran inisial: HANYA huruf pertama nama --}}
                             <span class="akun__inisial" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
 
-                            {{-- Titik merah pengingat; hilang setelah password diganti --}}
                             @if (auth()->user()->must_change_password)
                                 <span class="akun__titik" data-sandi-pengingat title="Password awal belum diganti"></span>
                             @endif
 
-                            {{-- Nama lengkap di samping lingkaran --}}
-                            <span class="akun__nama">{{ auth()->user()->name }}</span>
-                            <svg class="akun__panah" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                            <span class="akun__nama">{{ explode(' ', auth()->user()->name)[0] }}</span>
                         </button>
 
                         <div class="akun__menu" data-akun-menu hidden>

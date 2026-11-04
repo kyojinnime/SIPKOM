@@ -47,6 +47,24 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->whereIn('tipe', ['dosen', 'pengawas'])->whereNumber('id')->name('akun.reset');
     Route::delete('kelola-akun/{tipe}/{id}', [KelolaAkunController::class, 'hapus'])
         ->whereIn('tipe', ['dosen', 'pengawas'])->whereNumber('id')->name('akun.hapus');
+
+    // Routes for Master Data (Kelola Data)
+// [UBAH] Prodi hanya butuh index, store, update, destroy (form lewat dialog, bukan halaman terpisah)
+Route::resource('prodi', \App\Http\Controllers\Admin\ProdiController::class)
+    ->only(['index', 'store', 'update', 'destroy']);    
+// [UBAH] Kelas: hanya index, store, update, destroy (form lewat dialog)
+Route::resource('kelas', \App\Http\Controllers\Admin\KelasController::class)
+    ->only(['index', 'store', 'update', 'destroy']);// [UBAH] Periode: hanya index, store, update, destroy
+Route::resource('periode', \App\Http\Controllers\Admin\PeriodeController::class)
+    ->only(['index', 'store', 'update', 'destroy']);
+// [BARU] Jadikan periode aktif
+Route::patch('periode/{id}/aktifkan', [\App\Http\Controllers\Admin\PeriodeController::class, 'aktifkan'])
+    ->whereNumber('id')->name('periode.aktifkan');    Route::get('ruang', [\App\Http\Controllers\Admin\RuangController::class, 'index'])->name('ruang.index');
+    // [UBAH] Ruang: route destroy diganti toggle (nonaktifkan / aktifkan kembali)
+Route::get('ruang', [\App\Http\Controllers\Admin\RuangController::class, 'index'])->name('ruang.index');
+Route::post('ruang', [\App\Http\Controllers\Admin\RuangController::class, 'store'])->name('ruang.store');
+Route::put('ruang/{id}', [\App\Http\Controllers\Admin\RuangController::class, 'update'])->whereNumber('id')->name('ruang.update');
+Route::patch('ruang/{id}/toggle', [\App\Http\Controllers\Admin\RuangController::class, 'toggle'])->whereNumber('id')->name('ruang.toggle');
 });
 
 // ===== SEMENTARA: hapus semuanya saat halaman login sudah dibuat =====

@@ -11,15 +11,23 @@ use Illuminate\Support\Str;
 class Ruang extends Model
 {
     protected $table = 'ruang';
-    protected $fillable = ['pengawas_id', 'nama_ruang', 'foto', 'jenis_pekerjaan', 'status_tersedia'];
+    protected $fillable = ['pengawas_id', 'pengawas_kedua_id', 'nama_ruang', 'foto', 'jenis_pekerjaan', 'status_tersedia', 'kuota', 'deskripsi', 'aktif'];
     protected $casts = [
         'jenis_pekerjaan' => 'array',      // JSON <-> array PHP
         'status_tersedia' => 'boolean',
+        'aktif' => 'boolean',
+        'kuota' => 'integer',
     ];
 
     public function pengawas(): BelongsTo
     {
         return $this->belongsTo(Pengawas::class, 'pengawas_id');
+    }
+
+    /** [BARU] Pengawas kedua: pengganti sementara saat pengawas utama berhalangan (boleh kosong). */
+    public function pengawasKedua(): BelongsTo
+    {
+        return $this->belongsTo(Pengawas::class, 'pengawas_kedua_id');
     }
 
     public function kompen(): HasMany

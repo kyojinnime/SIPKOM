@@ -1,0 +1,166 @@
+/* =====================================================================
+   master-data.css - gaya bersama halaman Data Master admin
+   (Program Studi, Periode, Ruang, Kelas).
+   WAJIB dimuat SETELAH kelola-akun.css karena memakai dan menambah kelasnya.
+   Isi: baris daftar, nomor, tombol ikon, lencana, filter, form, dialog, responsif
+   ===================================================================== */
+
+/* ===== BAGIAN: Grid baris daftar master =====
+   Pakai grid-template-areas agar kolom tetap lurus antar baris,
+   walau ada baris yang tidak punya meta atau status. */
+.daftar--master .baris {
+    grid-template-columns: 44px minmax(0, 2.4fr) minmax(0, 1.6fr) minmax(88px, auto) auto;
+    grid-template-areas: "nomor identitas meta status tindakan";
+    gap: 14px;
+}
+
+/* Varian tanpa kolom status (mis. Prodi): lebih lega untuk identitas */
+.daftar--ringkas .baris {
+    grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1.2fr) auto;
+    grid-template-areas: "nomor identitas meta tindakan";
+}
+
+/* Penempatan tiap elemen ke area grid-nya */
+.daftar--master .nomor     { grid-area: nomor; }
+.daftar--master .identitas { grid-area: identitas; }
+.daftar--master .meta      { grid-area: meta; }
+.daftar--master .status-akun { grid-area: status; justify-self: start; }
+.daftar--master .tindakan  { grid-area: tindakan; }
+
+/* ===== BAGIAN: Nomor urut (kotak bulat lembut) ===== */
+.nomor {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--hijau-pucat); color: var(--hijau-tua);
+    font-size: .8rem; font-weight: 600;
+}
+
+/* Teks pendukung di bawah nama boleh turun baris (tidak dipotong) */
+.daftar--master .identitas__email { white-space: normal; }
+.daftar--master .identitas__nama { font-weight: 600; }
+
+/* Ruang atau periode nonaktif: nomor ikut redup */
+.baris--nonaktif .nomor { background: #eef1ef; color: var(--abu); }
+
+/* ===== BAGIAN: Tombol aksi berbentuk ikon ===== */
+.tindakan { display: flex; align-items: center; gap: 4px; }
+.aksi-ikon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; padding: 0;
+    border: 0; border-radius: 50%; background: transparent;
+    color: var(--teks-redup); cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.aksi-ikon svg {
+    width: 18px; height: 18px; fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.aksi-ikon:hover { background: var(--hijau-pucat); color: var(--hijau-tua); }
+.aksi-ikon:focus-visible { outline: 2px solid var(--hijau-terang); outline-offset: 2px; }
+.aksi-ikon--hapus:hover { background: var(--merah-pucat); color: #a33a46; }
+.aksi-ikon:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ===== BAGIAN: Lencana status tambahan (melengkapi .status-akun) ===== */
+.status-akun--netral { background: #eef1ef; color: var(--teks-redup); }
+
+/* Tombol kecil di dalam baris, mis. "Jadikan aktif" pada Periode */
+.btn--mini { padding: 6px 14px; font-size: .78rem; border-radius: 999px; }
+
+/* ===== BAGIAN: Filter pil di bilah alat (mis. filter prodi pada Kelas) ===== */
+.pilih { position: relative; display: block; }
+.pilih select {
+    appearance: none; -webkit-appearance: none;
+    padding: 10px 36px 10px 16px; border: 1px solid transparent; border-radius: 999px;
+    background: #f0f4f2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b6b63' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center / 14px;
+    font: inherit; font-size: .85rem; color: var(--teks); cursor: pointer;
+    transition: border-color .2s, background-color .2s;
+}
+.pilih select:focus { outline: none; border-color: var(--hijau-terang); background-color: var(--putih); }
+
+/* ===== BAGIAN: Kolom isian tambahan di dialog (melengkapi .field) ===== */
+.field select, .field textarea {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid #cfd9d4; border-radius: 10px; background: var(--putih);
+    font: inherit; font-size: .9rem; transition: border-color .2s, box-shadow .2s;
+}
+.field textarea { min-height: 84px; resize: vertical; }
+.field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--hijau-terang); box-shadow: 0 0 0 3px rgba(18, 176, 95, .18);
+}
+.field--galat select, .field--galat textarea { border-color: #c0504d; }
+.wajib { color: #c0504d; }
+
+/* Dua kolom sejajar (mis. Angkatan dan Nama Kelas) */
+.field-baris { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Kotak centang (mis. "Aktifkan periode ini"): input kecil di kiri, bukan selebar kolom */
+.field--cek label {
+    display: flex; align-items: center; gap: 10px; margin: 0;
+    padding: 12px 14px; border-radius: 10px; background: var(--hijau-pucat);
+    font-weight: 500; cursor: pointer;
+}
+.field--cek input { width: 18px; height: 18px; padding: 0; accent-color: var(--hijau-terang); }
+
+/* Dialog yang lebih lebar untuk form dengan banyak kolom */
+.modal--lebar { width: min(560px, calc(100% - 24px)); }
+
+/* ===== BAGIAN: Keadaan kosong hasil pencarian ===== */
+.kosong--cari { padding: 36px 16px; }
+
+/* ===== BAGIAN: Smartphone dan tablet (<= 720px) =====
+   Selector sengaja sama panjang dengan aturan desktop agar menang atas
+   aturan .baris di kelola-akun.css */
+@media (max-width: 720px) {
+    .daftar--master .baris {
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        grid-template-areas: "nomor identitas tindakan" ". meta status";
+        row-gap: 8px; column-gap: 10px;
+    }
+    .daftar--ringkas .baris {
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        grid-template-areas: "nomor identitas tindakan" ". meta meta";
+    }
+    .daftar--master .status-akun { justify-self: end; }
+    .pilih select { width: 100%; }
+    .pilih { width: 100%; }
+    .field-baris { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* =====================================================================
+   [BARU] BAGIAN: Halaman Periode
+   ===================================================================== */
+
+/* Kolom status memakai lebar tetap (lencana dan tombol sama lebar) agar baris lurus.
+   Dibungkus media min-width supaya tidak menimpa aturan HP di bawah. */
+@media (min-width: 721px) {
+    .daftar--periode .baris { grid-template-columns: 44px minmax(0, 2fr) minmax(0, 1.6fr) 130px auto; }
+}
+
+/* Pembungkus lencana atau tombol status */
+.daftar--master .status-slot { grid-area: status; justify-self: start; }
+
+/* Ikon di dalam lingkaran avatar (pengganti huruf inisial) */
+.avatar svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 720px) {
+    .daftar--master .status-slot { justify-self: end; }
+}
+
+/* =====================================================================
+   [BARU] BAGIAN: Halaman Kelas
+   ===================================================================== */
+
+/* Lingkaran nama kelas (mis. "4C") memakai huruf lebih kecil agar muat */
+.avatar--kelas { font-size: .82rem; letter-spacing: -.02em; }
+
+/* Info kedua di bawah teks meta (mis. jumlah mahasiswa) */
+.meta__sub { display: block; margin-top: 2px; font-size: .75rem; opacity: .85; }
+
+/* Peringatan lembut: kelas belum punya dosen wali */
+.meta--kosong { color: #a33a46; font-weight: 500; }
+
+/* Pratinjau semester di bawah baris angkatan dan huruf kelas */
+.pratinjau { display: block; min-height: 1.2em; margin: -4px 0 14px; font-size: .78rem; color: var(--hijau-tua); }
+
+/* Kotak info di dalam panel */
+.panel > .info-password { margin: 12px 0 0; }

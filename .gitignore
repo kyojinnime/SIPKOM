@@ -1,4 +1,36 @@
-# Folder non-produksi yang ingin diabaikan
+# === FOLDER NON-PRODUKSI ANDA ===
 **/konteks/
 **/graphify-out/
 **/tasks/
+
+# === CORE LARAVEL BARRICADE (WAJIB) ===
+/vendor/
+/node_modules/
+/public/storage
+/public/hot
+.env
+.env.backup
+.env.production
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.phpunit.result.cache
+
+# === CACHE & LOGS LARAVEL ===
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/app/public/*
+/storage/logs/*
+/bootstrap/cache/*
+
+# === IDE & EDITOR ===
+/.idea
+/.vscode
+/*.suo
+/*.ntvs*
+/*.njsproj
+/*.sln
+/*.sw?

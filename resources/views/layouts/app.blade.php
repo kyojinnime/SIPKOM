@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     {{-- viewport wajib agar tampilan menyesuaikan lebar layar smartphone --}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('judul', 'SIPKOM') - Sistem Pengelolaan Kompensasi Mahasiswa</title>
 
     {{-- Font Poppins; bila offline, browser memakai font sans-serif bawaan --}}
@@ -37,7 +38,7 @@
         @include('partials.ganti-password')
     @endif
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
     {{-- [BARU] dropdown akun; dimuat di semua halaman karena header ada di semua halaman --}}
     <script src="{{ asset('js/akun-menu.js') }}"></script>
     @if (auth()->check() && auth()->user()->must_change_password)

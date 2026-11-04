@@ -10,19 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Kelas extends Model
 {
     protected $table = 'kelas';
-    protected $fillable = ['prodi_id', 'dosen_wali_id', 'angkatan', 'nama_kelas'];
-
-    /** Cache tahun mulai periode aktif agar tidak query berulang per kelas. */
-    protected static ?int $tahunMulaiAktif = null;
+    protected $fillable = ['prodi_id', 'angkatan', 'nama_kelas'];
 
     public function prodi(): BelongsTo
     {
         return $this->belongsTo(Prodi::class);
     }
 
-    public function dosenWali(): BelongsTo
+    public function penugasan(): HasMany
     {
-        return $this->belongsTo(DosenWali::class, 'dosen_wali_id');
+        return $this->hasMany(PenugasanDosenWali::class, 'kelas_id');
     }
 
     public function mahasiswa(): HasMany
@@ -31,20 +28,28 @@ class Kelas extends Model
     }
 
     /**
-     * Tingkat saat ini, dihitung dari angkatan dan periode aktif.
-     * Contoh: angkatan 2025, periode 2026/2027 -> tingkat 2.
+     * Semester saat ini, dihitung dari angkatan dan periode aktif sesuai dokumen.
+     * Rumus: (tahun mulai tahun ajaran - angkatan) * 2 + (1 untuk ganjil, 2 untuk genap)
      */
-    public function getTingkatAttribute(): int
+    public function getSemesterAttribute(): int
     {
-        if (static::$tahunMulaiAktif === null) {
-            static::$tahunMulaiAktif = Periode::yangAktif()?->tahunMulai() ?? (int) date('Y');
-        }
-        return max(1, static::$tahunMulaiAktif - $this->angkatan + 1);
+        $periode = Periode::yangAktif();
+        
+        // Fallback jika belum ada periode
+        if (!$periode) return 1;
+
+        $tahunMulai = $periode->tahunMulai();
+        $semesterIndex = $periode->getSemesterIndex(); // 1 ganjil, 2 genap
+
+        // Rumus sesuai dokumen: (tahunMulai - angkatan) * 2 + semesterIndex
+        $semester = ($tahunMulai - $this->angkatan) * 2 + $semesterIndex;
+
+        return max(1, min(14, $semester)); // Batasi agar tidak negatif atau terlalu besar
     }
 
-    /** Label untuk dropdown/tabel, mis. "2A - D3 Teknik Informatika". */
+    /** Label untuk dropdown/tabel, mis. "Semester 3A - D3 Teknik Informatika". */
     public function getLabelAttribute(): string
     {
-        return $this->tingkat . $this->nama_kelas . ' - ' . ($this->prodi->nama_prodi ?? '-');
+        return $this->semester . $this->nama_kelas . ' - ' . ($this->prodi->nama_prodi ?? '-');
     }
 }

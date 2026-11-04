@@ -1,8 +1,9 @@
 {{-- Satu baris akun. Variabel: $tipe ('dosen' atau 'pengawas'), $item (model DosenWali / Pengawas) --}}
 @php
-    $nama   = $tipe === 'dosen' ? $item->nama_dosen : $item->nama_pengawas;
-    $jumlah = $tipe === 'dosen' ? $item->kelas_count : $item->ruang_count;
-    $aktif  = $item->user->is_active;
+    $nama = $tipe === 'dosen' ? $item->nama_dosen : $item->nama_pengawas;
+    // Pengawas: hitung ruang sebagai utama dan sebagai pengawas kedua
+    $jumlah = $tipe === 'dosen' ? $item->penugasan_count : ($item->ruang_count ?? 0) + ($item->ruang_kedua_count ?? 0);
+    $aktif = $item->user->is_active;
 
     // Teks relasi: kelas untuk dosen wali, ruang untuk pengawas
     if ($tipe === 'dosen') {
@@ -37,14 +38,22 @@
     {{-- Menu aksi (titik tiga). Tombolnya difungsikan di Langkah 4 dan 5 --}}
     <div class="baris__aksi">
         <button type="button" class="menu-tombol" data-menu-tombol aria-haspopup="true" aria-expanded="false"
-                aria-label="Aksi untuk {{ $nama }}">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            aria-label="Aksi untuk {{ $nama }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="5" r="1.6" />
+                <circle cx="12" cy="12" r="1.6" />
+                <circle cx="12" cy="19" r="1.6" />
+            </svg>
         </button>
         <div class="menu" data-menu hidden>
-            <button type="button" class="menu-item" data-aksi="ubah" data-tipe="{{ $tipe }}" data-id="{{ $item->id }}">Ubah data</button>
-            <button type="button" class="menu-item" data-aksi="toggle" data-tipe="{{ $tipe }}" data-id="{{ $item->id }}">{{ $aktif ? 'Nonaktifkan akun' : 'Aktifkan akun' }}</button>
-            <button type="button" class="menu-item" data-aksi="reset" data-tipe="{{ $tipe }}" data-id="{{ $item->id }}">Reset password</button>
-            <button type="button" class="menu-item menu-item--bahaya" data-aksi="hapus" data-tipe="{{ $tipe }}" data-id="{{ $item->id }}">Hapus</button>
+            <button type="button" class="menu-item" data-aksi="ubah" data-tipe="{{ $tipe }}"
+                data-id="{{ $item->id }}">Ubah data</button>
+            <button type="button" class="menu-item" data-aksi="toggle" data-tipe="{{ $tipe }}"
+                data-id="{{ $item->id }}">{{ $aktif ? 'Nonaktifkan akun' : 'Aktifkan akun' }}</button>
+            <button type="button" class="menu-item" data-aksi="reset" data-tipe="{{ $tipe }}"
+                data-id="{{ $item->id }}">Reset password</button>
+            <button type="button" class="menu-item menu-item--bahaya" data-aksi="hapus"
+                data-tipe="{{ $tipe }}" data-id="{{ $item->id }}">Hapus</button>
         </div>
     </div>
 </li>

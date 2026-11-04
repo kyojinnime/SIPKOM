@@ -104,10 +104,17 @@ a {
 .btn:active {
     transform: scale(0.98);
 }
-.btn--solid {
+.btn--solid,
+.btn--primer {
     background: var(--hijau-terang);
     color: var(--putih);
 }
+.btn--solid:hover,
+.btn--primer:hover {
+    background: var(--hijau);
+}
+.btn--tambah { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 10px 20px; }
+.btn--tambah svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
 .btn--solid:hover {
     background: var(--hijau);
 }
@@ -143,15 +150,16 @@ a {
     top: 0;
     z-index: 50;
     background: var(--latar);
-    border-bottom: 2px solid var(--hijau-kartu);
+    border-bottom: 1px solid #e3ece7;
     min-height: var(--tinggi-header);
 }
 .header__isi {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 24px;
     min-height: var(--tinggi-header);
+    padding: 0 20px;
 }
 
 .brand {
@@ -159,6 +167,7 @@ a {
     align-items: center;
     gap: 12px;
     text-decoration: none;
+    flex-shrink: 0;
 }
 .brand__logo {
     width: 48px;
@@ -175,23 +184,66 @@ a {
 .header__panel {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 32px;
+    flex: 1;
+    justify-content: flex-end;
 }
 .nav {
     display: flex;
     align-items: center;
-    gap: 26px;
+    gap: 24px;
 }
 .nav__link {
+    position: relative;
+    font-family: inherit;
     font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
     text-decoration: none;
-    padding: 4px 0;
+    padding: 8px 0;
     white-space: nowrap;
+    color: var(--teks);
+    transition: color 0.2s ease;
+}
+.nav__link:hover {
+    color: var(--hijau);
 }
 .nav__link--aktif {
     color: var(--hijau-tua);
     font-weight: 600;
-    border-bottom: 2px solid var(--hijau-tua);
+}
+/* Garis hijau aktif dengan animasi */
+.nav__link--aktif:not(.nav__link--dropdown)::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--hijau-tua);
+    border-radius: 3px 3px 0 0;
+    animation: slideIn 0.3s ease;
+}
+.nav__link--dropdown.nav__link--aktif::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -2px;
+    left: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--hijau-tua);
+    animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    to {
+        transform: scaleX(1);
+        opacity: 1;
+    }
 }
 .nav__link--nonaktif {
     color: var(--abu);
@@ -201,21 +253,36 @@ a {
     display: flex;
     gap: 8px;
 }
-/* ===== BAGIAN: Menu khusus admin (pil tipis agar beda dari menu umum) ===== */
+/* ===== BAGIAN: Menu khusus admin ===== */
 .nav__link--admin {
-    color: var(--hijau);
-    border: 1px solid var(--hijau-kartu);
-    border-radius: 20px;
-    padding: 4px 14px;
+    color: var(--teks);
+    padding: 8px 0;
+    font-family: inherit;
+    font-size: 1rem;
     font-weight: 500;
+    line-height: 1.5;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s ease;
 }
 .nav__link--admin:hover {
-    background: var(--hijau-pucat);
+    color: var(--hijau);
 }
 .nav__link--admin.nav__link--aktif {
     color: var(--hijau-tua);
-    background: var(--hijau-pucat);
-    border: 1px solid var(--hijau-tua);
+    font-weight: 600;
+}
+/* Garis hijau untuk menu admin yang aktif */
+.nav__link--admin.nav__link--aktif::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--hijau-tua);
+    border-radius: 3px 3px 0 0;
+    animation: slideIn 0.3s ease;
 }
 
 /* ===== BAGIAN: Dropdown akun (setelah login) ===== */
@@ -327,6 +394,90 @@ a {
 }
 .akun__item:hover {
     background: var(--hijau-pucat);
+}
+
+/* ===== BAGIAN: Dropdown Menu Navigasi (Kelola Data) ===== */
+/* ===== BAGIAN: Dropdown "Kelola Data" (modern dengan animasi) ===== */
+.nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.nav__link--dropdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--teks);
+    padding: 8px 0;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+}
+.nav__link--dropdown:hover {
+    color: var(--hijau);
+}
+.nav__link--dropdown:focus-visible {
+    outline: 2px solid var(--hijau-terang);
+    outline-offset: 2px;
+}
+/* Icon chevron modern */
+.nav__link--dropdown::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav__link--dropdown[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+/* Dropdown menu dengan animasi fade + slide */
+.nav-dropdown__menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 12px);
+    z-index: 60;
+    min-width: 200px;
+    padding: 8px;
+    background: var(--putih);
+    border: 1px solid #d8e6de;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 40px rgba(15, 80, 50, 0.15);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+.nav-dropdown__menu:not([hidden]) {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.nav-dropdown__menu[hidden] {
+    display: none;
+}
+/* Item dropdown dengan hover smooth */
+.nav-dropdown__item {
+    display: block;
+    padding: 10px 14px;
+    color: var(--teks);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-dropdown__item:hover {
+    background: var(--hijau-pucat);
+    color: var(--hijau-tua);
+    transform: translateX(4px);
 }
 
 /* Tombol hamburger disembunyikan di desktop */

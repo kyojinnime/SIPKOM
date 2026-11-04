@@ -13,6 +13,14 @@
 
     /** Membuka menu dan memberi tahu pembaca layar lewat aria-expanded. */
     function buka() {
+        // Tutup dropdown Kelola Data jika terbuka
+        var navDropdownMenu = document.querySelector('[data-nav-dropdown-menu]');
+        if (navDropdownMenu && !navDropdownMenu.hasAttribute('hidden')) {
+            navDropdownMenu.setAttribute('hidden', '');
+            var navDropdownTombol = document.querySelector('[data-nav-dropdown-tombol]');
+            if (navDropdownTombol) navDropdownTombol.setAttribute('aria-expanded', 'false');
+        }
+        
         menu.hidden = false;
         tombol.setAttribute('aria-expanded', 'true');
     }

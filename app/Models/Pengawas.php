@@ -22,4 +22,10 @@ class Pengawas extends Model
     {
         return $this->hasMany(Ruang::class, 'pengawas_id');
     }
+
+    /** [BARU] Ruang yang diawasi sebagai pengawas kedua (pengganti). */
+    public function ruangKedua(): HasMany
+    {
+        return $this->hasMany(Ruang::class, 'pengawas_kedua_id');
+    }
 }

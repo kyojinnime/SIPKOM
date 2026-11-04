@@ -18,9 +18,9 @@ class DosenWali extends Model
         return $this->belongsTo(User::class);
     }
 
-    /** Kelas yang diampu dosen wali ini. */
-    public function kelas(): HasMany
+    /** Penugasan kelas yang diampu dosen wali per periode. */
+    public function penugasan(): HasMany
     {
-        return $this->hasMany(Kelas::class, 'dosen_wali_id');
+        return $this->hasMany(PenugasanDosenWali::class, 'dosen_wali_id');
     }
 }
