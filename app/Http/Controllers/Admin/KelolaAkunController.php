@@ -23,7 +23,8 @@ class KelolaAkunController extends Controller
     {
         // withCount: jumlah penugasan kelas / ruang per orang dalam satu query, bukan satu query per baris
         $dosen = DosenWali::with('user')->withCount($this->hitungArg('dosen'))->orderBy('nama_dosen')->get();
-        Pengawas::with('user')->withCount($this->hitungArg('pengawas'))->orderBy('nama_pengawas')->get();
+                // Hasil query disimpan ke $pengawas agar ikut terkirim lewat compact() ke view
+        $pengawas = Pengawas::with('user')->withCount($this->hitungArg('pengawas'))->orderBy('nama_pengawas')->get();
 
         return view('admin.kelola-akun', compact('dosen', 'pengawas'));
     }
@@ -187,10 +188,9 @@ class KelolaAkunController extends Controller
             // Riwayat penugasan di periode mana pun menahan penghapusan agar riwayat dosen wali aman
             $tertahan = $item->penugasan()->exists();
             $alasan = 'Tidak bisa dihapus: dosen wali punya riwayat penugasan kelas. Gunakan Nonaktifkan.';
-            $alasan = 'Tidak bisa dihapus: dosen wali masih memegang kelas. Gunakan Nonaktifkan.';
         } else {
             // Tabel kompen mungkin belum dimigrasi; cek hanya bila tabelnya ada
-            $item->ruang()->exists() || $item->ruangKedua()->exists()
+            $tertahan = $item->ruang()->exists() || $item->ruangKedua()->exists()
                 || (Schema::hasTable('kompen') && DB::table('kompen')->where('divalidasi_oleh', $item->id)->exists());
             $alasan = 'Tidak bisa dihapus: pengawas masih punya ruang atau riwayat validasi. Gunakan Nonaktifkan.';
         }

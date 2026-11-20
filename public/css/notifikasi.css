@@ -1,0 +1,91 @@
+/* =====================================================================
+   notifikasi.css - lonceng notifikasi di header dan halaman Notifikasi
+   Dimuat di semua halaman untuk akun yang sudah login (lewat layout).
+   Memakai variabel dari app.css.
+   ===================================================================== */
+
+/* Atribut hidden harus menang atas display bawaan komponen di bawah */
+.lonceng [hidden] { display: none !important; }
+
+/* ===== BAGIAN: Lonceng di header ===== */
+.lonceng { position: relative; }
+.lonceng__tombol {
+    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    width: 42px; height: 42px; padding: 0;
+    border: 1px solid var(--hijau-kartu); border-radius: 50%;
+    background: var(--putih); color: var(--hijau-tua); font: inherit; cursor: pointer;
+    transition: background .2s;
+}
+.lonceng__tombol:hover, .lonceng__tombol[aria-expanded="true"] { background: var(--hijau-pucat); }
+.lonceng__tombol:focus-visible { outline: 2px solid var(--hijau-terang); outline-offset: 2px; }
+.lonceng__tombol svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+/* Teks "Notifikasi" hanya tampil di menu hamburger (layar kecil) */
+.lonceng__teks { display: none; }
+
+/* Badge jumlah belum dibaca */
+.lonceng__badge {
+    position: absolute; top: -5px; right: -5px;
+    min-width: 20px; height: 20px; padding: 0 5px;
+    border: 2px solid var(--latar); border-radius: 999px;
+    background: #c0504d; color: var(--putih);
+    font-size: .66rem; font-weight: 700; line-height: 16px; text-align: center;
+}
+
+/* ===== BAGIAN: Panel dropdown ===== */
+.lonceng__panel {
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 60;
+    width: min(380px, calc(100vw - 24px));
+    background: var(--putih); border: 1px solid #d8e6de; border-radius: var(--radius);
+    box-shadow: var(--bayangan); overflow: hidden;
+}
+.lonceng__kepala { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #e3ece7; font-size: .9rem; }
+.lonceng__semua { padding: 0; border: 0; background: none; font: inherit; font-size: .78rem; font-weight: 500; color: var(--hijau); cursor: pointer; }
+.lonceng__semua:hover { text-decoration: underline; }
+.lonceng__semua:disabled { color: var(--abu); cursor: default; text-decoration: none; }
+.lonceng__daftar { margin: 0; padding: 0; list-style: none; max-height: 340px; overflow-y: auto; }
+.lonceng__kosong { margin: 0; padding: 28px 16px; text-align: center; font-size: .85rem; color: var(--teks-redup); }
+.lonceng__lihat { display: block; padding: 11px 14px; border-top: 1px solid #e3ece7; text-align: center; font-size: .82rem; font-weight: 500; color: var(--hijau); text-decoration: none; }
+.lonceng__lihat:hover { background: var(--hijau-pucat); }
+
+/* ===== BAGIAN: Baris notifikasi (dipakai dropdown dan halaman) ===== */
+.notif-daftar { margin: 0; padding: 0; list-style: none; }
+.notif-baris { display: flex; align-items: flex-start; border-bottom: 1px solid #eef3f0; }
+.notif-baris:last-child { border-bottom: 0; }
+.notif-baris--baru { background: #f4fbf7; }
+.notif-tautan { display: flex; flex: 1; gap: 12px; min-width: 0; padding: 12px 14px; color: var(--teks); text-decoration: none; }
+.notif-tautan:hover { background: #eef8f2; }
+/* Titik hijau penanda belum dibaca */
+.notif-titik { flex: 0 0 9px; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%; background: transparent; }
+.notif-baris--baru .notif-titik { background: var(--hijau-terang); }
+.notif-teks { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.notif-judul { font-size: .86rem; font-weight: 500; }
+.notif-baris--baru .notif-judul { font-weight: 600; }
+.notif-isi { font-size: .78rem; color: var(--teks-redup); overflow-wrap: anywhere; }
+.notif-waktu { font-size: .72rem; color: var(--abu); }
+
+/* Tombol "Tandai dibaca" per baris (halaman Notifikasi) */
+.notif-tandai { flex: 0 0 auto; align-self: center; margin: 0 12px; padding: 6px 12px; border: 0; border-radius: 999px; background: var(--hijau-pucat); color: var(--hijau-tua); font: inherit; font-size: .75rem; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.notif-tandai:hover { background: #cfeed9; }
+
+/* ===== BAGIAN: Halaman Notifikasi ===== */
+.panel .tab a.tab__btn { text-decoration: none; }
+.notif-halaman { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 18px 0 10px; font-size: .85rem; }
+.notif-halaman__tombol { padding: 6px 14px; border-radius: 999px; background: var(--hijau-terang); color: var(--putih); text-decoration: none; }
+.notif-halaman__tombol:hover { background: var(--hijau); }
+.notif-halaman__tombol--mati, .notif-halaman__tombol--mati:hover { background: #cfd8d3; }
+
+/* ===== BAGIAN: Layar kecil (<= 992px): lonceng ikut mengalir di menu hamburger ===== */
+@media (max-width: 992px) {
+    .auth { flex-direction: column; align-items: stretch; }
+    .lonceng, .lonceng__tombol { width: 100%; }
+    .lonceng__tombol { height: auto; padding: 6px 14px 6px 12px; border-radius: 999px; justify-content: flex-start; }
+    .lonceng__teks { display: inline; font-size: .85rem; font-weight: 500; }
+    .lonceng__badge { position: static; margin-left: auto; border: 0; }
+    .lonceng__panel { position: static; width: auto; margin-top: 8px; box-shadow: none; }
+}
+
+@media (max-width: 640px) {
+    /* Tombol "Tandai dibaca" turun ke bawah teks agar judul tidak sempit */
+    .notif-baris { flex-wrap: wrap; }
+    .notif-tandai { margin: 0 14px 12px 35px; }
+}

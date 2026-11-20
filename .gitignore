@@ -3,30 +3,49 @@
 **/graphify-out/
 **/tasks/
 
-# === CORE LARAVEL BARRICADE (WAJIB) ===
+# === CORE LARAVEL ===
 /vendor/
 /node_modules/
-/public/storage
+/public/build
 /public/hot
+/public/storage
+/storage/*.key
+/storage/pail
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
 Homestead.json
 Homestead.yaml
+auth.json
 npm-debug.log
 yarn-error.log
 .phpunit.result.cache
+/.phpunit.cache
 
 # === CACHE & LOGS LARAVEL ===
-/storage/framework/cache/data/*
-/storage/framework/sessions/*
-/storage/framework/testing/*
-/storage/framework/views/*
+# Isi folder diabaikan, tetapi berkas penahan .gitignore tetap dilacak agar folder ada setelah clone
 /storage/app/public/*
+!/storage/app/public/.gitignore
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
 /storage/logs/*
+!/storage/logs/.gitignore
 /bootstrap/cache/*
+!/bootstrap/cache/.gitignore
 
-# === IDE & EDITOR ===
+# === DATA MAHASISWA ASLI (PDF SIAKAD, REKAP, DUMP DATABASE) ===
+*.pdf
+*.xlsx
+*.sql
+*.sql.gz
+
+# === IDE, EDITOR, SISTEM OPERASI, PYTHON ===
 /.idea
 /.vscode
 /*.suo
@@ -34,3 +53,6 @@ yarn-error.log
 /*.njsproj
 /*.sln
 /*.sw?
+.DS_Store
+Thumbs.db
+/venv/

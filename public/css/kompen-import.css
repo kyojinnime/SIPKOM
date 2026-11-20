@@ -1,0 +1,158 @@
+/* =====================================================================
+   kompen-import.css - gaya wizard Import Data Kompensasi
+   Memakai variabel dari app.css. Dimuat SETELAH kelola-akun.css.
+   Isi: indikator langkah, area unggah, kolom aksi, hasil sementara
+   ===================================================================== */
+
+/* ===== BAGIAN: Isi panel (lebar nyaman dibaca, di tengah) ===== */
+.impor { padding: 22px 22px 26px; }
+.impor__isi { max-width: 720px; margin: 0 auto; }
+.impor .field select {
+    /* kolom pilihan periode memakai gaya .field select dari master-data.css bila dimuat; ini cadangan */
+    width: 100%; padding: 12px 14px; border: 1px solid #cfd9d4; border-radius: 10px;
+    background: var(--putih); font: inherit; font-size: .9rem;
+}
+.impor .field select:focus { outline: none; border-color: var(--hijau-terang); box-shadow: 0 0 0 3px rgba(18, 176, 95, .18); }
+
+/* ===== BAGIAN: Indikator langkah (dipakai juga oleh pratinjau dan ringkasan) ===== */
+.langkah { display: flex; align-items: center; list-style: none; margin: 0 auto 26px; padding: 0 0 20px; max-width: 720px; border-bottom: 1px solid #e3ece7; }
+.langkah__item { display: flex; align-items: center; gap: 10px; flex: 1; font-size: .85rem; color: var(--teks-redup); }
+.langkah__item:last-child { flex: 0 0 auto; }
+/* Garis penghubung antar langkah */
+.langkah__item:not(:last-child)::after { content: ''; flex: 1; height: 2px; margin: 0 14px; background: #e3ece7; }
+.langkah__item--selesai:not(:last-child)::after { background: var(--hijau-terang); }
+.langkah__no {
+    display: flex; align-items: center; justify-content: center; flex: 0 0 30px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #eef1ef; color: var(--teks-redup); font-size: .82rem; font-weight: 600;
+}
+.langkah__item--aktif { color: var(--hijau-tua); font-weight: 600; }
+.langkah__item--aktif .langkah__no { background: var(--hijau-terang); color: var(--putih); }
+.langkah__item--selesai .langkah__no { background: var(--hijau-pucat); color: var(--hijau-tua); }
+
+/* ===== BAGIAN: Area unggah ===== */
+.unggah {
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 36px 20px; text-align: center;
+    border: 2px dashed var(--hijau-kartu); border-radius: var(--radius); background: var(--latar);
+    transition: background .2s, border-color .2s;
+}
+.unggah:hover, .unggah--seret { background: var(--hijau-pucat); border-color: var(--hijau-terang); }
+.unggah--terisi { border-style: solid; border-color: var(--hijau-terang); background: var(--hijau-pucat); }
+/* Cincin fokus saat input di dalamnya difokuskan lewat keyboard */
+.unggah:focus-within { outline: 2px solid var(--hijau-terang); outline-offset: 2px; }
+.field--galat .unggah { border-color: #c0504d; background: #fdf3f4; }
+
+.unggah__ikon { width: 42px; height: 42px; margin-bottom: 4px; fill: none; stroke: var(--hijau); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.unggah__judul { font-size: .95rem; font-weight: 600; color: var(--hijau-tua); word-break: break-all; }
+.unggah__info { font-size: .78rem; color: var(--teks-redup); }
+
+/* Input file transparan menutupi seluruh area. Selektor lebih spesifik dari .field input */
+.unggah input[type="file"] {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer;
+}
+
+/* ===== BAGIAN: Tombol di bawah form ===== */
+.impor__aksi { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+
+/* ===== BAGIAN: Smartphone (<= 640px) ===== */
+@media (max-width: 640px) {
+    .impor { padding: 16px 14px 20px; }
+    /* Hanya label langkah yang aktif tampil, agar tidak berdesakan */
+    .langkah__item:not(.langkah__item--aktif) .langkah__label { display: none; }
+    .langkah__item:not(:last-child)::after { margin: 0 8px; }
+    .unggah { padding: 28px 14px; }
+    .impor__aksi { flex-direction: column-reverse; }
+    .impor__aksi .btn { width: 100%; }
+}
+
+/* =====================================================================
+   [BARU] Langkah 8: pratinjau import
+   ===================================================================== */
+
+/* Warna peringatan (kuning). Satu-satunya warna di luar token desain; dipakai hanya di panel import */
+.impor { --kuning-pucat: #fbf0cf; --kuning-teks: #7a5b0c; --kuning-garis: #d9a21b; }
+
+/* Panel pratinjau lebih lebar dari form unggah */
+.impor--lebar .impor__isi { max-width: none; }
+.impor [hidden] { display: none !important; }
+
+/* Identitas file di atas daftar */
+.berkas-info { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0 0 14px; font-size: .85rem; color: var(--teks-redup); }
+.berkas-info strong { color: var(--teks); }
+
+/* Kotak peringatan kuning (pasangan .galat-umum merah dan .info-password hijau) */
+.peringatan { margin: 0 0 10px; padding: 10px 14px; border-left: 4px solid var(--kuning-garis); border-radius: 8px; background: var(--kuning-pucat); color: var(--kuning-teks); font-size: .83rem; }
+.impor .info-password { margin: 0 0 10px; }
+.impor .galat-umum { margin: 0 0 10px; }
+.impor .tab { margin-bottom: 8px; }
+
+/* Satu blok kelas */
+.blok { margin-top: 22px; padding: 18px; border: 1px solid #e3ece7; border-radius: var(--radius); background: var(--putih); }
+.blok__kepala { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.blok__kepala h2 { margin: 0 0 2px; font-size: 1.05rem; color: var(--hijau); }
+.blok__kepala p { margin: 0; font-size: .8rem; color: var(--teks-redup); }
+
+/* Lencana status (hijau, kuning, merah) */
+.lencana-pt { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: .73rem; font-weight: 600; white-space: nowrap; }
+.lencana-pt--hijau { background: #cfeed9; color: var(--hijau-tua); }
+.lencana-pt--kuning { background: var(--kuning-pucat); color: var(--kuning-teks); }
+.lencana-pt--merah { background: var(--merah-pucat); color: #a33a46; }
+
+/* Tabel baris mahasiswa */
+.pt-bungkus { overflow-x: auto; border: 1px solid #eef3f0; border-radius: var(--radius); }
+.pt { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.pt th { background: var(--hijau-pucat); color: var(--hijau-tua); text-align: left; padding: 10px 12px; font-weight: 600; white-space: nowrap; }
+.pt td { padding: 10px 12px; border-top: 1px solid #eef3f0; vertical-align: top; }
+.pt td small { display: block; margin-top: 2px; font-size: .74rem; color: var(--teks-redup); }
+.pt__pesan { max-width: 300px; }
+/* Garis warna di sisi kiri baris */
+.pt__baris--kuning td:first-child { box-shadow: inset 4px 0 0 var(--kuning-garis); }
+.pt__baris--merah td:first-child { box-shadow: inset 4px 0 0 #c0504d; }
+.pt__baris--hijau td:first-child { box-shadow: inset 4px 0 0 var(--hijau-terang); }
+.pt__baris--merah td { background: #fdf6f7; }
+
+/* Kotak centang konfirmasi (timpa file lama, nolkan jam) */
+.hilang { margin-top: 14px; padding: 14px 16px; border-radius: var(--radius); background: var(--kuning-pucat); }
+.hilang h3 { margin: 0 0 4px; font-size: .95rem; color: var(--kuning-teks); }
+.hilang p { margin: 0 0 10px; font-size: .8rem; color: var(--kuning-teks); }
+.cek-baris { display: flex; align-items: flex-start; gap: 10px; margin: 0 0 8px; font-size: .84rem; cursor: pointer; }
+.cek-baris input { flex: 0 0 18px; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--hijau-terang); }
+.cek-baris small { color: var(--teks-redup); }
+
+/* Smartphone dan tablet (<= 720px): baris menjadi kartu */
+@media (max-width: 720px) {
+    .blok { padding: 12px; }
+    .blok__kepala { flex-direction: column; }
+    .pt thead { display: none; }
+    .pt, .pt tbody, .pt tr, .pt td { display: block; width: 100%; }
+    .pt tr { padding: 8px 0; border-top: 1px solid #eef3f0; }
+    .pt tr:first-child { border-top: 0; }
+    .pt td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 3px 12px; text-align: right; }
+    .pt td::before { content: attr(data-label); flex: 0 0 auto; font-weight: 600; color: var(--teks-redup); text-align: left; }
+    .pt__baris--kuning td:first-child, .pt__baris--merah td:first-child, .pt__baris--hijau td:first-child { box-shadow: none; }
+    .pt__baris--kuning { box-shadow: inset 4px 0 0 var(--kuning-garis); }
+    .pt__baris--merah { box-shadow: inset 4px 0 0 #c0504d; }
+    .pt__baris--hijau { box-shadow: inset 4px 0 0 var(--hijau-terang); }
+}
+
+/* =====================================================================
+   [BARU] Langkah 9: halaman ringkasan hasil simpan
+   ===================================================================== */
+
+/* Lencana netral (blok tanpa data) */
+.lencana-pt--netral { background: #eef1ef; color: var(--teks-redup); }
+
+/* Rincian hitungan per kelas */
+.hasil-rinci { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 0; padding: 0; list-style: none; font-size: .82rem; color: var(--teks-redup); }
+.hasil-rinci strong { color: var(--teks); }
+
+/* Kotak unduhan daftar baris yang tidak disimpan */
+.galat-unduh { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 18px; padding: 14px 16px; border-radius: var(--radius); background: var(--merah-pucat); color: #a33a46; font-size: .85rem; }
+.galat-unduh p { margin: 0; }
+
+@media (max-width: 640px) {
+    .galat-unduh .btn { width: 100%; }
+}

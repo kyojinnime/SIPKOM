@@ -19,6 +19,10 @@
     @if (auth()->check() && auth()->user()->must_change_password)
         <link rel="stylesheet" href="{{ asset('css/ganti-password.css') }}">
     @endif
+    {{-- Lonceng notifikasi di header: hanya untuk akun yang sudah login --}}
+    @auth
+        <link rel="stylesheet" href="{{ asset('css/notifikasi.css') }}">
+    @endauth
     @stack('css')
 </head>
 
@@ -44,6 +48,10 @@
     @if (auth()->check() && auth()->user()->must_change_password)
         <script src="{{ asset('js/ganti-password.js') }}"></script>
     @endif
+    {{-- Lonceng notifikasi: dimuat sesudah app.js agar SIPKOM.toast tersedia --}}
+    @auth
+        <script src="{{ asset('js/notifikasi.js') }}"></script>
+    @endauth
     @stack('js')
 </body>
 

@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class JumlahKompen extends Model
 {
     protected $table = 'jumlah_kompen';
-    protected $fillable = ['mahasiswa_id', 'periode_id', 'jumlah_jam', 'keterangan'];
+    protected $fillable = ['mahasiswa_id', 'periode_id', 'jumlah_jam', 'keterangan', 'dibatalkan_pada', 'alasan_batal'];
+
+    /** dibatalkan_pada menjadi tanggal (Carbon); kosong = kewajiban masih berlaku. */
+    protected $casts = ['dibatalkan_pada' => 'datetime'];
 
     public function mahasiswa(): BelongsTo
     {

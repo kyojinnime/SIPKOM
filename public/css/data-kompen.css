@@ -1,0 +1,209 @@
+/* =====================================================================
+   data-kompen.css - gaya halaman Data Kompen (dosen wali dan admin)
+   Memakai variabel dari app.css. Dimuat SETELAH kelola-akun.css dan master-data.css.
+   Isi: kartu perhatian, bilah filter, tab berupa tautan, grid daftar, progres,
+        lencana status, navigasi halaman, tampilan kartu di smartphone
+   ===================================================================== */
+
+/* ===== BAGIAN: Kartu perhatian di kepala ===== */
+.ringkas__item--perhatian { background: rgba(255, 220, 220, .26); border-color: rgba(255, 220, 220, .6); }
+
+/* ===== BAGIAN: Tab berupa tautan (<a>) ===== */
+.tab a.tab__btn { text-decoration: none; }
+.panel__bar .btn--tambah { text-decoration: none; }
+
+/* ===== BAGIAN: Bilah filter ===== */
+.saring { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 0; border-bottom: 1px solid #e3ece7; }
+.saring .cari { flex: 1 1 220px; }
+.saring .cari input { width: 100%; }
+.saring__reset { font-size: .82rem; font-weight: 500; color: var(--hijau); text-decoration: none; white-space: nowrap; }
+.saring__reset:hover { text-decoration: underline; }
+
+/* ===== BAGIAN: Grid daftar. Kolom dipakai bersama oleh judul kolom dan tiap baris ===== */
+.kompen-tabel { --kolom: 40px minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.7fr) 130px 124px; }
+.daftar-kepala {
+    display: grid; grid-template-columns: var(--kolom); gap: 14px;
+    padding: 12px 8px 8px; font-size: .74rem; font-weight: 600; color: var(--teks-redup);
+    border-bottom: 1px solid #eef3f0;
+}
+.daftar--kompen .baris {
+    grid-template-columns: var(--kolom);
+    grid-template-areas: "nomor identitas kelas jam progres status tindakan";
+    gap: 14px;
+}
+.daftar--kompen .nomor { grid-area: nomor; }
+.daftar--kompen .identitas { grid-area: identitas; }
+.daftar--kompen .kol-kelas { grid-area: kelas; }
+.daftar--kompen .kol-jam { grid-area: jam; }
+.daftar--kompen .kol-progres { grid-area: progres; }
+.daftar--kompen .lencana-kompen { grid-area: status; justify-self: start; }
+
+/* Label kecil (Kelas, Jam wajib) hanya tampil di smartphone */
+.lbl { display: none; }
+
+.kol-kelas { display: flex; flex-direction: column; min-width: 0; }
+.kol-kelas strong { color: var(--teks); font-size: .88rem; }
+.kol-jam { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: .86rem; }
+.kol-jam small { color: var(--teks-redup); font-size: .74rem; }
+
+/* Tanda 64 jam atau lebih (F16) */
+.lencana-besar { padding: 2px 8px; border-radius: 999px; background: var(--merah-pucat); color: #a33a46; font-size: .68rem; font-weight: 600; white-space: nowrap; }
+
+/* ===== BAGIAN: Progres ===== */
+.kol-progres small { display: block; margin-top: 4px; font-size: .74rem; color: var(--teks-redup); }
+.progres { height: 8px; border-radius: 999px; background: #e3ece7; overflow: hidden; }
+.progres__isi { display: block; height: 100%; border-radius: 999px; background: var(--hijau-terang); transition: width .3s; }
+.progres__isi--selesai { background: var(--hijau-tua); }
+.progres__kosong { color: var(--abu); }
+
+/* ===== BAGIAN: Lencana status ===== */
+.lencana-kompen { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: .75rem; font-weight: 600; white-space: nowrap; }
+.lencana-kompen::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.lencana-kompen--belum_mulai { background: #eef1ef; color: var(--teks-redup); }
+.lencana-kompen--berjalan { background: var(--hijau-pucat); color: var(--hijau); }
+.lencana-kompen--selesai { background: #cfeed9; color: var(--hijau-tua); }
+.lencana-kompen--dibatalkan { background: var(--merah-pucat); color: #a33a46; }
+.lencana-kompen--tidak_ada { background: #eef1ef; color: var(--abu); }
+
+/* ===== BAGIAN: Keadaan kosong dengan tombol ===== */
+.kosong .btn { margin-top: 6px; }
+
+/* ===== BAGIAN: Navigasi halaman ===== */
+.halaman { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 18px 0 10px; font-size: .85rem; }
+.halaman__tombol { padding: 6px 14px; border-radius: 999px; background: var(--hijau-terang); color: var(--putih); text-decoration: none; }
+.halaman__tombol:hover { background: var(--hijau); }
+.halaman__tombol--mati { background: #cfd8d3; }
+.halaman__tombol--mati:hover { background: #cfd8d3; }
+
+/* ===== BAGIAN: Layar sempit (<= 720px): baris menjadi kartu ===== */
+@media (max-width: 720px) {
+    .daftar-kepala { display: none; }
+    .saring .pilih { flex: 1 1 100%; }
+    .saring .pilih select { width: 100%; }
+
+    .daftar--kompen .baris {
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        grid-template-areas: "nomor identitas status" ". kelas jam" ". progres progres" ". tindakan tindakan";
+        row-gap: 10px; column-gap: 10px;
+    }
+    .lbl { display: block; font-size: .68rem; font-weight: 500; color: var(--abu); }
+    .kol-jam { flex-direction: row; align-items: baseline; }
+    .kol-jam .lbl { flex: 0 0 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progres__isi { transition: none; }
+}
+
+/* =====================================================================
+   [BARU] Gaya yang sebelumnya dipinjam dari master-data.css.
+   Halaman ini tidak lagi bergantung pada file itu.
+   ===================================================================== */
+
+/* Dropdown filter berbentuk pil, dengan panah sendiri */
+.saring .pilih { position: relative; display: block; }
+.saring .pilih select {
+    appearance: none; -webkit-appearance: none;
+    max-width: 100%; padding: 10px 36px 10px 16px;
+    border: 1px solid transparent; border-radius: 999px;
+    background: #f0f4f2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b6b63' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center / 14px;
+    font: inherit; font-size: .85rem; color: var(--teks);
+    text-overflow: ellipsis; cursor: pointer;
+    transition: border-color .2s, background-color .2s;
+}
+.saring .pilih select:focus { outline: none; border-color: var(--hijau-terang); background-color: var(--putih); }
+
+/* Nomor urut: kotak bulat lembut */
+.daftar--kompen .nomor {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--hijau-pucat); color: var(--hijau-tua);
+    font-size: .8rem; font-weight: 600;
+}
+
+/* Teks kedua di bawah kelas (nama prodi) */
+.meta__sub { display: block; margin-top: 2px; font-size: .75rem; opacity: .85; }
+
+/* Pesan kosong hasil pencarian */
+.kosong--cari { padding: 36px 16px; }
+
+/* =====================================================================
+   [BARU] Langkah 11: tombol aksi, popup, halaman detail progres
+   ===================================================================== */
+
+/* ===== Tombol aksi berbentuk ikon ===== */
+.tindakan { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.daftar--kompen .tindakan { grid-area: tindakan; }
+.aksi-ikon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; padding: 0;
+    border: 0; border-radius: 50%; background: transparent;
+    color: var(--teks-redup); cursor: pointer; text-decoration: none;
+    transition: background .15s, color .15s;
+}
+.aksi-ikon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.aksi-ikon:hover { background: var(--hijau-pucat); color: var(--hijau-tua); }
+.aksi-ikon:focus-visible { outline: 2px solid var(--hijau-terang); outline-offset: 2px; }
+.aksi-ikon--hapus:hover { background: var(--merah-pucat); color: #a33a46; }
+
+/* Nama mahasiswa sebagai tautan ke detail */
+.identitas__tautan { font-weight: 600; color: var(--teks); text-decoration: none; }
+.identitas__tautan:hover { color: var(--hijau); text-decoration: underline; }
+
+/* ===== Isian popup (textarea dan angka) ===== */
+.field textarea {
+    width: 100%; padding: 12px 14px; min-height: 84px; resize: vertical;
+    border: 1px solid #cfd9d4; border-radius: 10px; background: var(--putih);
+    font: inherit; font-size: .9rem; transition: border-color .2s, box-shadow .2s;
+}
+.field textarea:focus { outline: none; border-color: var(--hijau-terang); box-shadow: 0 0 0 3px rgba(18, 176, 95, .18); }
+.field--galat textarea { border-color: #c0504d; }
+.field label small { font-weight: 400; color: var(--teks-redup); }
+.wajib { color: #c0504d; }
+.batal-info { margin: 0 0 14px; font-size: .84rem; color: var(--teks-redup); }
+
+/* Kotak peringatan kuning di popup (warna lokal, bukan token desain) */
+.catatan-kuning { margin: 0 0 12px; padding: 10px 14px; border-left: 4px solid #d9a21b; border-radius: 8px; background: #fbf0cf; color: #7a5b0c; font-size: .83rem; }
+
+/* ===== Halaman detail ===== */
+.kembali { display: inline-block; margin-bottom: 10px; font-size: .85rem; color: var(--putih); text-decoration: none; opacity: .92; }
+.kembali:hover { text-decoration: underline; }
+.ringkas__angka--teks { font-size: 1.1rem; padding-top: 4px; }
+
+.detail { padding-bottom: 20px; }
+.detail__bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 12px; }
+.detail__bar h2, .detail__judul { margin: 0; font-size: 1.05rem; color: var(--hijau); }
+.detail__judul { margin-top: 28px; padding-bottom: 10px; border-bottom: 1px solid #e3ece7; }
+.detail__teks { margin: 8px 0 0; font-size: .86rem; color: var(--teks-redup); }
+.progres--besar { height: 12px; }
+
+/* Kewajiban per periode */
+.periode-daftar { list-style: none; margin: 0; padding: 0; }
+.periode-baris { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 14px 8px; border-bottom: 1px solid #eef3f0; }
+.periode-baris:last-child { border-bottom: 0; }
+.periode-baris__info { display: flex; flex-direction: column; min-width: 0; font-size: .86rem; }
+.periode-baris__info span, .periode-baris__info small { color: var(--teks-redup); }
+.periode-baris__info small { font-size: .76rem; }
+.periode-baris--batal .periode-baris__info strong { color: var(--abu); text-decoration: line-through; }
+
+/* Riwayat kompensasi */
+.rel-bungkus { overflow-x: auto; margin-top: 4px; }
+.rel { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.rel th { background: var(--hijau-pucat); color: var(--hijau-tua); text-align: left; padding: 10px 12px; font-weight: 600; white-space: nowrap; }
+.rel td { padding: 10px 12px; border-top: 1px solid #eef3f0; }
+
+@media (max-width: 720px) {
+    .periode-baris { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; }
+    .periode-baris .tindakan { grid-column: 1 / -1; }
+    .rel thead { display: none; }
+    .rel, .rel tbody, .rel tr, .rel td { display: block; width: 100%; }
+    .rel tr { padding: 8px 0; border-top: 1px solid #eef3f0; }
+    .rel tr:first-child { border-top: 0; }
+    .rel td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 3px 4px; text-align: right; }
+    .rel td::before { content: attr(data-label); font-weight: 600; color: var(--teks-redup); text-align: left; }
+}
+
+/* [BARU] Langkah 12: baris akun login di halaman detail */
+.akun-baris { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 14px 8px; }
+.akun-baris__info { display: flex; flex-direction: column; min-width: 0; font-size: .86rem; }
+.akun-baris__info span { color: var(--teks-redup); }
