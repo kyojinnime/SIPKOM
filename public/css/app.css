@@ -329,6 +329,12 @@ a {
     font-weight: 700;
     line-height: 1;
 }
+/* [BARU] Foto profil di dalam lingkaran avatar header */
+.akun__foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 .akun__nama {
     min-width: 0;
     max-width: 140px;

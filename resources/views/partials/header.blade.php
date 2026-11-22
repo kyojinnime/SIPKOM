@@ -107,7 +107,13 @@
                     <div class="akun" data-akun>
                         <button type="button" class="akun__tombol" data-akun-tombol
                                 aria-haspopup="true" aria-expanded="false">
-                            <span class="akun__inisial" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                            <span class="akun__inisial" aria-hidden="true">
+                                @if (auth()->user()->url_foto)
+                                    <img src="{{ auth()->user()->url_foto }}" alt="" class="akun__foto">
+                                @else
+                                    {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
+                                @endif
+                            </span>
 
                             @if (auth()->user()->must_change_password)
                                 <span class="akun__titik" data-sandi-pengingat title="Password awal belum diganti"></span>
@@ -124,8 +130,9 @@
 
                             @if (auth()->user()->must_change_password)
                                 <div class="akun__pengingat" data-sandi-pengingat>Password awal belum diganti</div>
-                                <button type="button" class="akun__item" data-buka-sandi data-sandi-pengingat>Ganti Password</button>
                             @endif
+
+                            <a href="{{ route('profil') }}" class="akun__item">Profil Saya</a>
 
                             @if (Route::has('logout'))
                                 <form method="POST" action="{{ route('logout') }}">

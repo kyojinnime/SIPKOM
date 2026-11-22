@@ -1,0 +1,114 @@
+/* =====================================================================
+   profil.css - halaman Profil Saya
+   Memakai variabel dari app.css dan pola panel dari kelola-akun.css.
+   ===================================================================== */
+
+/* Atribut hidden harus menang atas display bawaan */
+.profil [hidden] { display: none !important; }
+
+.profil-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.panel__judul {
+    margin: 6px 4px 14px;
+    font-size: 1.05rem;
+    color: var(--hijau-tua);
+}
+
+.panel__keterangan {
+    margin: 0 0 16px;
+    font-size: .85rem;
+    color: var(--teks-redup);
+}
+
+/* ===== Avatar profil ===== */
+.profil__avatar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 4px 4px 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eef3f0;
+}
+.profil__foto,
+.profil__inisial {
+    flex: 0 0 72px;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+}
+.profil__foto {
+    object-fit: cover;
+}
+.profil__inisial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hijau-kartu);
+    color: var(--putih);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+.profil__avatar-aksi {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.profil__petunjuk {
+    margin: 8px 0 0;
+    font-size: .75rem;
+    color: var(--teks-redup);
+}
+
+/* ===== Kolom hanya baca (mahasiswa) ===== */
+.profil__statis {
+    margin: 0 0 14px;
+    padding: 4px 14px;
+    border: 1px dashed #cfd9d4;
+    border-radius: 10px;
+    background: #f7fbf9;
+}
+.profil__statis > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eef3f0;
+}
+.profil__statis > div:last-child {
+    border-bottom: 0;
+}
+.profil__statis dt {
+    font-size: .78rem;
+    color: var(--teks-redup);
+}
+.profil__statis dd {
+    margin: 0;
+    font-size: .88rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+.profil__kaki {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px solid #eef3f0;
+}
+
+/* ===== Layar kecil: kartu menumpuk ===== */
+@media (max-width: 720px) {
+    .profil-grid {
+        grid-template-columns: 1fr;
+    }
+    .profil__avatar {
+        flex-direction: column;
+        text-align: center;
+    }
+    .profil__avatar-aksi {
+        justify-content: center;
+    }
+}

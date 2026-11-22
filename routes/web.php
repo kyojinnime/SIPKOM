@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\KelolaAkunController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AkunController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Kompen\DataKompenController;
 use App\Http\Controllers\Kompen\ImportKompenController;
 use App\Http\Controllers\Kompen\JamKompenController;
@@ -35,6 +36,14 @@ Route::post('/logout', [LoginController::class, 'keluar'])->middleware('auth')->
 // kolom "password saat ini" bisa dipakai menebak password pada sesi yang ditinggal terbuka.
 Route::put('/akun/password', [AkunController::class, 'ubahPassword'])
     ->middleware(['auth', 'throttle:5,1'])->name('akun.password');
+
+// ===== Profil Saya: semua peran (role: juga mengeluarkan akun yang dinonaktifkan) =====
+Route::middleware(['auth', 'role:admin,dosen_wali,pengawas,mahasiswa'])->group(function () {
+    Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+    Route::put('/profil', [ProfilController::class, 'perbarui'])->name('profil.perbarui');
+    Route::post('/profil/foto', [ProfilController::class, 'foto'])->middleware('throttle:20,1')->name('profil.foto');
+    Route::delete('/profil/foto', [ProfilController::class, 'hapusFoto'])->middleware('throttle:20,1')->name('profil.foto.hapus');
+});
 
 // ===== Notifikasi dalam aplikasi: semua role (role: juga mengeluarkan akun yang dinonaktifkan) =====
 // Setiap akun hanya bisa mengakses notifikasi miliknya; milik orang lain menghasilkan 404.

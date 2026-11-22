@@ -16,9 +16,9 @@
     {{-- CSS dasar (variabel warna, header, footer, tombol) lalu CSS khusus halaman --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         {{-- Gaya popup keamanan akun: hanya untuk akun yang masih memakai password awal --}}
-    @if (auth()->check() && auth()->user()->must_change_password)
+    @auth
         <link rel="stylesheet" href="{{ asset('css/ganti-password.css') }}">
-    @endif
+    @endauth
     {{-- Lonceng notifikasi di header: hanya untuk akun yang sudah login --}}
     @auth
         <link rel="stylesheet" href="{{ asset('css/notifikasi.css') }}">
@@ -38,16 +38,16 @@
     {{-- Pesan kecil (toast) untuk fitur yang butuh login --}}
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
         {{-- Popup peringatan dan ganti password --}}
-    @if (auth()->check() && auth()->user()->must_change_password)
+    @auth
         @include('partials.ganti-password')
-    @endif
+    @endauth
 
     <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
     {{-- [BARU] dropdown akun; dimuat di semua halaman karena header ada di semua halaman --}}
     <script src="{{ asset('js/akun-menu.js') }}"></script>
-    @if (auth()->check() && auth()->user()->must_change_password)
+    @auth
         <script src="{{ asset('js/ganti-password.js') }}"></script>
-    @endif
+    @endauth
     {{-- Lonceng notifikasi: dimuat sesudah app.js agar SIPKOM.toast tersedia --}}
     @auth
         <script src="{{ asset('js/notifikasi.js') }}"></script>

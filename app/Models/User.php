@@ -26,6 +26,8 @@ class User extends Authenticatable
         'password',
         'is_active',            // [BARU] akun aktif / nonaktif
         'must_change_password', // [BARU] wajib ganti password saat login
+        'telepon',              // [BARU] nomor telepon profil (boleh kosong)
+        'foto',                 // [BARU] path foto profil di storage/app/public
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -50,5 +52,20 @@ class User extends Authenticatable
             'is_active' => 'boolean',            // [BARU] dibaca true/false, bukan 1/0
             'must_change_password' => 'boolean', // [BARU]
         ];
+    }
+
+    /**
+     * URL foto profil; null bila belum ada foto atau filenya sudah tidak ada
+     * (tampilan memakai inisial sebagai cadangan, bukan gambar rusak).
+     */
+    public function getUrlFotoAttribute(): ?string
+    {
+        if (!$this->foto) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->exists($this->foto)
+            ? asset('storage/' . $this->foto)
+            : null;
     }
 }
