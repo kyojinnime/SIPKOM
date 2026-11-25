@@ -8,6 +8,7 @@ use App\Models\Kelas;
 use App\Models\Kompen;
 use App\Models\Mahasiswa;
 use App\Models\Pengawas;
+use App\Models\PenugasanDosenWali;
 use App\Models\Periode;
 use App\Models\Prodi;
 use App\Models\Ruang;
@@ -49,10 +50,14 @@ class SipkomSeeder extends Seeder
                 'role' => 'dosen_wali', 'password' => $sandi,
             ]);
             $dosen = DosenWali::create(['user_id' => $user->id, 'nama_dosen' => $faker->name()]);
-            $daftarKelas[] = Kelas::create([
-                'prodi_id' => $prodi->id, 'dosen_wali_id' => $dosen->id,
+            $kelas = Kelas::create([
+                'prodi_id' => $prodi->id,
                 'angkatan' => $angkatan, 'nama_kelas' => $huruf,
             ]);
+            PenugasanDosenWali::create([
+                'kelas_id' => $kelas->id, 'periode_id' => $periode->id, 'dosen_wali_id' => $dosen->id,
+            ]);
+            $daftarKelas[] = $kelas;
         }
 
         // ===== BAGIAN: Pengawas + ruang =====
